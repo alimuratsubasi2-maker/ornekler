@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NovaDijitalTR — Örnek Çalışmalar</title>
+<meta name="description" content="NovaDijitalTR web sitesi, uygulama ve e-ticaret örnek projeleri">
+<style>
+  :root { --bg:#0e0f13; --card:#171920; --line:#262934; --text:#f2f3f5; --muted:#9aa0ad; --accent:#7c5cff; }
+  * { box-sizing:border-box; margin:0; }
+  body { background:var(--bg); color:var(--text); font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  .wrap { max-width:1080px; margin:0 auto; padding:56px 16px 40px; }
+  .brand { font-weight:700; letter-spacing:.04em; color:var(--accent); font-size:14px; text-transform:uppercase; }
+  h1 { font-size:clamp(28px,5vw,44px); line-height:1.15; margin:10px 0 12px; }
+  .lead { color:var(--muted); max-width:620px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; margin-top:40px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:16px; overflow:hidden; text-decoration:none; color:inherit; display:flex; flex-direction:column; transition:transform .15s,border-color .15s; }
+  .card:hover { transform:translateY(-3px); border-color:var(--accent); }
+  .shot { aspect-ratio:16/10; background:#222 center top/cover no-repeat; border-bottom:1px solid var(--line); }
+  .body { padding:18px 20px 22px; }
+  .tag { display:inline-block; font-size:12px; font-weight:600; color:var(--accent); background:rgba(124,92,255,.12); padding:4px 10px; border-radius:999px; margin-bottom:10px; }
+  h2 { font-size:20px; margin-bottom:6px; }
+  p.d { color:var(--muted); font-size:15px; }
+  .go { margin-top:14px; font-weight:600; font-size:14px; }
+  footer { color:var(--muted); font-size:14px; margin-top:48px; border-top:1px solid var(--line); padding-top:20px; }
+  footer a { color:var(--text); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="brand">NovaDijitalTR</div>
+  <h1>Örnek çalışmalarımız</h1>
+  <p class="lead">İşletmenize özel kurduğumuz sistemlerden örnekler. Hepsi tanıtım amaçlı hazırlanmış kurgusal işletmelerdir. Tasarımı, renkleri ve içeriği tamamen sizin markanıza göre uyarlıyoruz.</p>
+
+  <div class="grid">
+    <a class="card" href="dis-klinigi/">
+      <div class="shot" style="background-image:url(onizleme/dis-klinigi.jpg)"></div>
+      <div class="body">
+        <span class="tag">Kurumsal Web Sitesi</span>
+        <h2>Gülüş Diş Kliniği</h2>
+        <p class="d">Klinik, ofis ve hizmet işletmeleri için tanıtım sitesi: hizmetler, hasta yorumları, sık sorulanlar ve randevu formu.</p>
+        <div class="go">Siteyi incele →</div>
+      </div>
+    </a>
+    <a class="card" href="salon-defteri/">
+      <div class="shot" style="background-image:url(onizleme/salon-defteri.jpg)"></div>
+      <div class="body">
+        <span class="tag">Abonelikli Uygulama (SaaS)</span>
+        <h2>Salon Defteri</h2>
+        <p class="d">Aylık abonelikle satılan web uygulaması: tanıtım sayfası, paketler, üyelik ve ödeme altyapısı.</p>
+        <div class="go">Uygulamayı incele →</div>
+      </div>
+    </a>
+    <a class="card" href="atolye-anadolu/tr/">
+      <div class="shot" style="background-image:url(onizleme/atolye-anadolu.jpg)"></div>
+      <div class="body">
+        <span class="tag">E-Ticaret Mağazası</span>
+        <h2>Atölye Anadolu</h2>
+        <p class="d">Kendi online mağazanız: ürün sayfaları, koleksiyonlar, TL fiyat, KDV, kargo seçenekleri ve yönetim paneli.</p>
+        <div class="go">Mağazayı incele →</div>
+      </div>
+    </a>
+    <a class="card" href="randevu/novadijital/">
+      <div class="shot" style="background-image:url(onizleme/randevu.jpg)"></div>
+      <div class="body">
+        <span class="tag">Online Randevu Sistemi</span>
+        <h2>Randevu Sayfası</h2>
+        <p class="d">Müşterilerinizin boş saatlerinizi görüp kendi randevusunu aldığı sistem. Takvim, hatırlatma ve görüşme türleri.</p>
+        <div class="go">Randevu sayfasını incele →</div>
+      </div>
+    </a>
+  </div>
+
+  <footer>Bu sayfalar tanıtım amaçlı ön izlemelerdir; form ve ödeme gibi işlemler canlı projede çalışır. · İletişim: <a href="mailto:novadijital65@gmail.com">novadijital65@gmail.com</a> · <a href="https://alimuratsubasi2-maker.github.io/fiyat-listesi/">Fiyat listesi</a></footer>
+</div>
+</body>
+</html>
