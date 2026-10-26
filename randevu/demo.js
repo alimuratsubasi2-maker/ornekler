@@ -19,8 +19,9 @@
   var prev = document.querySelector('[data-testid=decrementMonth]');
   var next = document.querySelector('[data-testid=incrementMonth]');
   var timeBtn = document.querySelector('[data-testid=time]');
-  var timeList = timeBtn && timeBtn.parentNode;
-  var timeTpl = timeBtn && timeBtn.cloneNode(true);
+  // her saat butonu kendi satır kabında (div.flex.gap-2); liste o kapların ebeveyni
+  var timeList = timeBtn && timeBtn.parentNode.parentNode;
+  var timeTpl = timeBtn && timeBtn.parentNode.cloneNode(true);
   var head = timeList && timeList.parentNode.querySelector('header .text-emphasis') ||
     document.querySelector('header span.text-emphasis');
   var h12 = false;
@@ -74,11 +75,12 @@
     var list = selected ? slots(selected) : [];
     if (!list.length) { timeList.innerHTML = '<p class="text-subtle text-sm">' + (selected ? 'Bu gün için boş saat kalmadı.' : 'Lütfen bir gün seçin.') + '</p>'; return; }
     list.forEach(function (m) {
-      var b = timeTpl.cloneNode(true);
+      var row = timeTpl.cloneNode(true);
+      var b = row.querySelector('[data-testid=time]');
       var inner = b.querySelector('.flex.items-center') || b;
       inner.textContent = fmt(m);
       b.onclick = function () { form(m); };
-      timeList.appendChild(b);
+      timeList.appendChild(row);
     });
   }
 
