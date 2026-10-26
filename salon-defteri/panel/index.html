@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Panel · Salon Defteri</title>
+<style>
+  :root { --rose:#e11d48; --rose-50:#fff1f2; --rose-100:#ffe4e6; --ink:#111827; --muted:#6b7280; --line:#e5e7eb; --bg:#f9fafb; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif; }
+  button, input, select { font:inherit; }
+  header { background:#fff; border-bottom:1px solid var(--line); height:64px; display:flex; align-items:center; padding:0 20px; gap:12px; position:sticky; top:0; z-index:5; }
+  .logo { display:flex; align-items:center; gap:8px; font-weight:600; font-size:18px; color:var(--ink); text-decoration:none; }
+  .logo svg { color:var(--rose); }
+  .salon { color:var(--muted); font-size:14px; border-left:1px solid var(--line); padding-left:12px; }
+  .sp { flex:1; }
+  .user { font-size:13px; color:var(--muted); }
+  .out { border:1px solid var(--line); background:#fff; border-radius:999px; padding:6px 14px; cursor:pointer; font-size:13px; }
+  .wrap { display:grid; grid-template-columns:220px 1fr; min-height:calc(100vh - 64px); }
+  nav { background:#fff; border-right:1px solid var(--line); padding:20px 12px; display:flex; flex-direction:column; gap:4px; }
+  nav button { text-align:left; border:0; background:none; padding:10px 12px; border-radius:10px; cursor:pointer; color:#374151; display:flex; gap:10px; align-items:center; }
+  nav button.on { background:var(--rose-50); color:var(--rose); font-weight:600; }
+  main { padding:28px; max-width:1100px; width:100%; }
+  h1 { font-size:24px; margin:0; }
+  .top { display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:20px; }
+  .daynav { display:flex; gap:6px; align-items:center; }
+  .daynav button { border:1px solid var(--line); background:#fff; border-radius:8px; width:34px; height:34px; cursor:pointer; }
+  .btn { background:var(--rose); color:#fff; border:0; border-radius:999px; padding:10px 18px; font-weight:600; cursor:pointer; }
+  .btn.l { background:#fff; color:var(--ink); border:1px solid var(--line); }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:20px; }
+  .stat { background:#fff; border:1px solid var(--line); border-radius:14px; padding:16px 18px; }
+  .stat b { display:block; font-size:24px; }
+  .stat span { color:var(--muted); font-size:13px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+  .appt { display:grid; grid-template-columns:64px 1fr auto; gap:14px; align-items:center; padding:14px 18px; border-bottom:1px solid var(--line); }
+  .appt:last-child { border-bottom:0; }
+  .appt .t { font-family:ui-monospace,Consolas,monospace; font-weight:600; }
+  .tag { display:inline-block; font-size:12px; border-radius:999px; padding:2px 10px; margin-left:6px; }
+  .sub { color:var(--muted); font-size:13px; }
+  .acts { display:flex; gap:6px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
+  .st { border:1px solid var(--line); background:#fff; border-radius:999px; padding:4px 12px; font-size:12px; cursor:pointer; }
+  .st.geldi { background:#dcfce7; border-color:#86efac; color:#166534; }
+  .st.gelmedi { background:#fee2e2; border-color:#fca5a5; color:#991b1b; }
+  .wa { border:0; background:#ecfdf5; color:#047857; border-radius:999px; padding:4px 12px; font-size:12px; cursor:pointer; }
+  .empty { padding:40px; text-align:center; color:var(--muted); }
+  table { width:100%; border-collapse:collapse; }
+  th, td { text-align:left; padding:12px 18px; border-bottom:1px solid var(--line); font-size:14px; }
+  th { color:var(--muted); font-weight:500; font-size:13px; background:#fafafa; }
+  .search { border:1px solid var(--line); border-radius:999px; padding:9px 16px; width:260px; max-width:100%; background:#fff; }
+  .bars { display:flex; align-items:flex-end; gap:12px; height:180px; padding:20px 18px 8px; }
+  .bar { flex:1; display:flex; flex-direction:column; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+  .bar i { display:block; width:100%; max-width:46px; background:var(--rose); border-radius:8px 8px 0 0; }
+  .back { position:fixed; inset:0; background:rgba(17,24,39,.45); display:flex; align-items:center; justify-content:center; padding:16px; z-index:20; }
+  .modal { background:#fff; border-radius:16px; padding:24px; width:min(440px,100%); max-height:92vh; overflow:auto; }
+  .modal h2 { margin:0 0 12px; font-size:20px; }
+  .modal label { display:block; font-size:13px; font-weight:600; margin:12px 0 4px; }
+  .modal input, .modal select { width:100%; border:1px solid #d1d5db; border-radius:10px; padding:10px 12px; background:#fff; }
+  .modal .row { display:flex; gap:10px; margin-top:20px; } .modal .row button { flex:1; }
+  .two { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .toast { position:fixed; left:50%; bottom:24px; transform:translateX(-50%); background:#111827; color:#fff; padding:12px 18px; border-radius:10px; font-size:14px; z-index:30; }
+  .welcome { background:var(--rose-50); border:1px solid var(--rose-100); color:#9f1239; border-radius:14px; padding:14px 18px; margin-bottom:18px; font-size:14px; }
+  .badge { position:fixed; right:12px; bottom:12px; z-index:40; background:rgba(17,17,17,.82); color:#fff; font:600 12px/1 system-ui,sans-serif; padding:8px 12px; border-radius:999px; text-decoration:none; }
+  @media (max-width:760px) {
+    .wrap { grid-template-columns:1fr; }
+    nav { flex-direction:row; overflow-x:auto; padding:8px; border-right:0; border-bottom:1px solid var(--line); position:sticky; top:64px; z-index:4; }
+    nav button { white-space:nowrap; }
+    main { padding:16px; }
+    .stats { grid-template-columns:1fr 1fr; } .stats .stat:last-child { grid-column:span 2; }
+    .salon, .user { display:none; }
+    .appt { grid-template-columns:52px 1fr; } .acts { grid-column:1 / -1; justify-content:flex-start; }
+    .hide-m { display:none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="../"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/></svg>Salon Defteri</a>
+  <span class="salon">Işıltı Kuaför · Kadıköy</span>
+  <span class="sp"></span>
+  <span class="user" id="user"></span>
+  <button class="out" id="out">Çıkış</button>
+</header>
+<div class="wrap">
+  <nav id="nav">
+    <button data-tab="bugun" class="on">📅 Randevular</button>
+    <button data-tab="musteri">👥 Müşteriler</button>
+    <button data-tab="kasa">💰 Kasa</button>
+    <button data-tab="ayar">⚙️ Ayarlar</button>
+  </nav>
+  <main id="main"></main>
+</div>
+<a class="badge" href="https://alimuratsubasi2-maker.github.io/ornekler/">Demo · NovaDijitalTR</a>
+<script>
+(function () {
+  var HIZMET = [['Saç kesimi', 450], ['Fön', 250], ['Dip boya', 900], ['Saç + Sakal', 550], ['Manikür', 400], ['Keratin bakım', 1800]];
+  var PERSONEL = ['Derya', 'Merve', 'Can'];
+  var AD = ['Elif Y.', 'Selin K.', 'Burak T.', 'Zeynep A.', 'Ayşe D.', 'Mert Ö.', 'Gizem S.', 'Ece B.', 'Kaan E.', 'Deniz Ç.'];
+  var DB = 'salon-demo-v1';
+  var tab = 'bugun', gun = new Date(); gun.setHours(0, 0, 0, 0);
+
+  function tl(n) { return '₺' + n.toLocaleString('tr-TR'); }
+  function dkey(d) { return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function toast(t) { var e = document.createElement('div'); e.className = 'toast'; e.textContent = t; document.body.appendChild(e); setTimeout(function () { e.remove(); }, 2800); }
+
+  var data;
+  try { data = JSON.parse(localStorage.getItem(DB)); } catch (e) {}
+  if (!data) {
+    // örnek veri: son 7 gün + önümüzdeki 7 gün
+    data = { randevu: [], musteri: AD.map(function (a, i) { return { ad: a, tel: '05' + (32 + i) + ' ' + (100 + i * 37) + ' ' + (10 + i) + ' ' + (20 + i) }; }) };
+    var seed = 7;
+    function rnd(n) { seed = (seed * 9301 + 49297) % 233280; return Math.floor(seed / 233280 * n); }
+    for (var o = -7; o <= 7; o++) {
+      var d = new Date(gun); d.setDate(d.getDate() + o);
+      if (d.getDay() === 0) continue;
+      var n = 4 + rnd(4), saat = 9 * 60 + 30;
+      for (var i = 0; i < n; i++) {
+        saat += 30 + rnd(3) * 30;
+        if (saat > 18 * 60 + 30) break;
+        var h = HIZMET[rnd(HIZMET.length)];
+        data.randevu.push({ g: dkey(d), m: saat, ad: AD[rnd(AD.length)], hizmet: h[0], fiyat: h[1], p: PERSONEL[rnd(3)], d: o < 0 ? (rnd(8) ? 'geldi' : 'gelmedi') : 'bekliyor' });
+      }
+    }
+    save();
+  }
+  function save() { try { localStorage.setItem(DB, JSON.stringify(data)); } catch (e) {} }
+
+  var user = ''; try { user = localStorage.getItem('salon-kullanici') || ''; } catch (e) {}
+  document.getElementById('user').textContent = user || 'demo@salondefteri.com';
+  document.getElementById('out').onclick = function () { try { localStorage.removeItem('salon-kullanici'); } catch (e) {} location.href = '../sign-in/'; };
+  document.getElementById('nav').onclick = function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    tab = b.getAttribute('data-tab');
+    this.querySelectorAll('button').forEach(function (x) { x.classList.toggle('on', x === b); });
+    render();
+  };
+
+  var main = document.getElementById('main');
+  function hhmm(m) { return ('0' + Math.floor(m / 60)).slice(-2) + ':' + ('0' + m % 60).slice(-2); }
+
+  function bugun() {
+    var list = data.randevu.filter(function (r) { return r.g === dkey(gun); }).sort(function (a, b) { return a.m - b.m; });
+    var ciro = list.filter(function (r) { return r.d !== 'gelmedi'; }).reduce(function (s, r) { return s + r.fiyat; }, 0);
+    var bas = gun.toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' });
+    var yeni = /yeni=1/.test(location.search) ? '<div class="welcome">🎉 Hoş geldiniz! 14 günlük ücretsiz denemeniz başladı. Aşağıda örnek randevularla salonunuzun nasıl yönetileceğini görebilirsiniz.</div>' : '';
+    main.innerHTML = yeni + '<div class="top"><h1>Randevular</h1><div class="daynav"><button data-d="-1">‹</button><button data-d="0" style="width:auto;padding:0 12px">Bugün</button><button data-d="1">›</button></div><span class="sub" style="text-transform:capitalize">' + bas + '</span><span class="sp" style="flex:1"></span><button class="btn" id="yeni">+ Yeni randevu</button></div>' +
+      '<div class="stats"><div class="stat"><b>' + list.length + '</b><span>randevu</span></div><div class="stat"><b>' + tl(ciro) + '</b><span>beklenen ciro</span></div><div class="stat"><b>' + Math.max(0, 16 - list.length) + '</b><span>boş saat</span></div></div>' +
+      '<div class="card">' + (list.length ? list.map(function (r) {
+        var i = data.randevu.indexOf(r);
+        return '<div class="appt"><span class="t">' + hhmm(r.m) + '</span><div><b>' + esc(r.ad) + '</b><span class="tag" style="background:var(--rose-50);color:var(--rose)">' + esc(r.hizmet) + '</span><div class="sub">' + esc(r.p) + ' · ' + tl(r.fiyat) + '</div></div>' +
+          '<div class="acts"><button class="wa" data-wa="' + i + '">WhatsApp hatırlat</button><button class="st ' + r.d + '" data-st="' + i + '">' + { bekliyor: 'Bekliyor', geldi: 'Geldi ✓', gelmedi: 'Gelmedi' }[r.d] + '</button></div></div>';
+      }).join('') : '<div class="empty">' + (gun.getDay() === 0 ? 'Pazar günü salon kapalı.' : 'Bu gün için randevu yok.') + '</div>') + '</div>';
+    main.querySelectorAll('[data-d]').forEach(function (b) {
+      b.onclick = function () { var v = +b.getAttribute('data-d'); if (!v) { gun = new Date(); gun.setHours(0, 0, 0, 0); } else gun.setDate(gun.getDate() + v); render(); };
+    });
+    main.querySelectorAll('[data-st]').forEach(function (b) {
+      b.onclick = function () { var r = data.randevu[b.getAttribute('data-st')]; r.d = { bekliyor: 'geldi', geldi: 'gelmedi', gelmedi: 'bekliyor' }[r.d]; save(); render(); };
+    });
+    main.querySelectorAll('[data-wa]').forEach(function (b) {
+      b.onclick = function () { var r = data.randevu[b.getAttribute('data-wa')]; b.textContent = 'Gönderildi ✓'; b.disabled = true; toast(r.ad + ' kişisine ' + hhmm(r.m) + ' randevusu için hatırlatma gönderildi.'); };
+    });
+    document.getElementById('yeni').onclick = yeniRandevu;
+  }
+
+  function yeniRandevu() {
+    var b = document.createElement('div'); b.className = 'back';
+    var saatler = []; for (var m = 9 * 60 + 30; m <= 19 * 60; m += 30) saatler.push(m);
+    b.innerHTML = '<form class="modal"><h2>Yeni randevu</h2><label>Müşteri</label><input name="ad" required list="ml" placeholder="Ad Soyad"><datalist id="ml">' +
+      data.musteri.map(function (x) { return '<option value="' + esc(x.ad) + '">'; }).join('') + '</datalist>' +
+      '<label>Hizmet</label><select name="h">' + HIZMET.map(function (h, i) { return '<option value="' + i + '">' + h[0] + ' — ' + tl(h[1]) + '</option>'; }).join('') + '</select>' +
+      '<div class="two"><div><label>Personel</label><select name="p">' + PERSONEL.map(function (p) { return '<option>' + p + '</option>'; }).join('') + '</select></div>' +
+      '<div><label>Saat</label><select name="m">' + saatler.map(function (m) { return '<option value="' + m + '">' + hhmm(m) + '</option>'; }).join('') + '</select></div></div>' +
+      '<label style="display:flex;gap:8px;align-items:center;font-weight:400"><input type="checkbox" checked style="width:auto"> Müşteriye SMS/WhatsApp onayı gönder</label>' +
+      '<div class="row"><button type="button" class="btn l" data-x>Vazgeç</button><button class="btn">Kaydet</button></div></form>';
+    document.body.appendChild(b);
+    b.querySelector('[data-x]').onclick = function () { b.remove(); };
+    b.addEventListener('click', function (e) { if (e.target === b) b.remove(); });
+    b.querySelector('form').onsubmit = function (e) {
+      e.preventDefault();
+      var f = e.target, h = HIZMET[f.h.value], ad = f.ad.value.trim();
+      data.randevu.push({ g: dkey(gun), m: +f.m.value, ad: ad, hizmet: h[0], fiyat: h[1], p: f.p.value, d: 'bekliyor' });
+      if (!data.musteri.some(function (x) { return x.ad === ad; })) data.musteri.push({ ad: ad, tel: '-' });
+      save(); b.remove(); render(); toast('Randevu kaydedildi, ' + ad + ' kişisine onay mesajı gönderildi.');
+    };
+  }
+
+  function musteri(q) {
+    q = (q || '').toLocaleLowerCase('tr');
+    var rows = data.musteri.map(function (x) {
+      var r = data.randevu.filter(function (y) { return y.ad === x.ad && y.d === 'geldi'; });
+      var son = r.map(function (y) { return y.g; }).sort().pop();
+      return { ad: x.ad, tel: x.tel, ziyaret: r.length, harcama: r.reduce(function (s, y) { return s + y.fiyat; }, 0), son: son ? son.split('-').reverse().join('.') : '—' };
+    }).filter(function (x) { return x.ad.toLocaleLowerCase('tr').indexOf(q) >= 0; });
+    main.innerHTML = '<div class="top"><h1>Müşteriler</h1><span style="flex:1"></span><input class="search" id="q" placeholder="Müşteri ara…" value="' + esc(q) + '"></div>' +
+      '<div class="card"><table><tr><th>Müşteri</th><th class="hide-m">Telefon</th><th>Ziyaret</th><th class="hide-m">Son ziyaret</th><th>Toplam</th></tr>' +
+      rows.map(function (x) { return '<tr><td><b>' + esc(x.ad) + '</b></td><td class="hide-m">' + esc(x.tel) + '</td><td>' + x.ziyaret + '</td><td class="hide-m">' + x.son + '</td><td>' + tl(x.harcama) + '</td></tr>'; }).join('') +
+      '</table></div>';
+    var inp = document.getElementById('q'); inp.oninput = function () { musteri(inp.value); var i = document.getElementById('q'); i.focus(); i.setSelectionRange(i.value.length, i.value.length); };
+  }
+
+  function kasa() {
+    var gunler = [];
+    for (var o = -6; o <= 0; o++) {
+      var d = new Date(); d.setHours(0, 0, 0, 0); d.setDate(d.getDate() + o);
+      var t = data.randevu.filter(function (r) { return r.g === dkey(d) && r.d !== 'gelmedi'; }).reduce(function (s, r) { return s + r.fiyat; }, 0);
+      gunler.push([d.toLocaleDateString('tr-TR', { weekday: 'short' }), t]);
+    }
+    var max = Math.max.apply(null, gunler.map(function (g) { return g[1]; })) || 1;
+    var hafta = gunler.reduce(function (s, g) { return s + g[1]; }, 0);
+    var prim = {}; data.randevu.forEach(function (r) { if (r.d === 'geldi') prim[r.p] = (prim[r.p] || 0) + r.fiyat; });
+    main.innerHTML = '<div class="top"><h1>Kasa</h1></div><div class="stats"><div class="stat"><b>' + tl(gunler[6][1]) + '</b><span>bugün</span></div><div class="stat"><b>' + tl(hafta) + '</b><span>son 7 gün</span></div><div class="stat"><b>' + tl(Math.round(hafta / 7)) + '</b><span>günlük ortalama</span></div></div>' +
+      '<div class="card" style="margin-bottom:20px"><div style="padding:16px 18px 0;font-weight:600">Son 7 gün ciro</div><div class="bars">' +
+      gunler.map(function (g) { return '<div class="bar"><span>' + (g[1] ? tl(g[1]) : '') + '</span><i style="height:' + Math.max(4, g[1] / max * 120) + 'px"></i>' + g[0] + '</div>'; }).join('') + '</div></div>' +
+      '<div class="card"><table><tr><th>Personel</th><th>Ciro</th><th>Prim (%20)</th></tr>' +
+      PERSONEL.map(function (p) { return '<tr><td><b>' + p + '</b></td><td>' + tl(prim[p] || 0) + '</td><td>' + tl(Math.round((prim[p] || 0) * 0.2)) + '</td></tr>'; }).join('') + '</table></div>';
+  }
+
+  function ayar() {
+    main.innerHTML = '<div class="top"><h1>Ayarlar</h1></div><div class="card" style="padding:20px 22px"><form class="modal" style="padding:0;width:100%;max-width:520px" id="af">' +
+      '<label>Salon adı</label><input value="Işıltı Kuaför"><label>Online randevu linkiniz</label><input value="salondefteri.com/isilti-kuafor" readonly>' +
+      '<div class="two"><div><label>Açılış</label><input value="09:30"></div><div><label>Kapanış</label><input value="19:30"></div></div>' +
+      '<label>Hatırlatma zamanı</label><select><option>Randevudan 1 gün önce</option><option>Randevudan 2 saat önce</option></select>' +
+      '<label>Paket</label><input value="Pro · 14 gün ücretsiz deneme" readonly><div class="row"><button class="btn">Kaydet</button></div></form></div>';
+    document.getElementById('af').onsubmit = function (e) { e.preventDefault(); toast('Ayarlar kaydedildi.'); };
+  }
+
+  function render() { ({ bugun: bugun, musteri: musteri, kasa: kasa, ayar: ayar })[tab](); }
+  render();
+})();
+</script>
+</body>
+</html>
